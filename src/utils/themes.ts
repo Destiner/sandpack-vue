@@ -1,3 +1,6 @@
+import { HighlightStyle, tags } from '@codemirror/highlight';
+import { EditorView } from '@codemirror/view';
+
 export type SandpackPredefinedTheme =
 	| 'light'
 	| 'dark'
@@ -66,7 +69,147 @@ export function getPredefinedTheme(
 	return SANDPACK_THEMES[themeId];
 }
 
-export const defaultLight: SandpackTheme = {
+export function themeEditor(theme: SandpackTheme) {
+	return EditorView.theme({
+		'&': {
+			backgroundColor: theme.palette.defaultBackground,
+			color:
+				getSyntaxStyle(theme.syntax.plain).color || theme.palette.activeText,
+			padding: '16px 0',
+			height: 'calc(100% - 40px)',
+		},
+
+		'&.cm-editor.cm-focused': {
+			outline: 'none',
+		},
+
+		'.cm-activeLine': {
+			backgroundColor: hexToCSSRGBa(theme.palette.activeBackground, 0.5),
+		},
+
+		'.cm-errorLine': {
+			backgroundColor: hexToCSSRGBa(theme.palette.errorBackground, 0.2),
+		},
+
+		'.cm-matchingBracket, .cm-nonmatchingBracket': {
+			color: 'inherit',
+			background: theme.palette.activeBackground,
+		},
+
+		'.cm-content': {
+			padding: 0,
+			caretColor: theme.palette.activeText,
+		},
+
+		'.cm-scroller': {
+			fontFamily: theme.typography.monoFont,
+			lineHeight: theme.typography.lineHeight,
+		},
+
+		'.cm-gutters': {
+			backgroundColor: theme.palette.defaultBackground,
+			color: theme.palette.defaultText,
+			border: 'none',
+		},
+
+		'.cm-gutter.cm-lineNumbers': {
+			paddingLeft: '4px',
+			paddingRight: '4px',
+		},
+
+		'.cm-lineNumbers .cm-gutterElement': {
+			padding: 0,
+		},
+
+		'.cm-line': {
+			padding: '0 12px',
+		},
+	});
+}
+
+export function getSyntaxHighlight(theme: SandpackTheme) {
+	return HighlightStyle.define([
+		{ tag: tags.link, textDecoration: 'underline' },
+		{ tag: tags.emphasis, fontStyle: 'italic' },
+		{ tag: tags.strong, fontWeight: 'bold' },
+
+		{
+			tag: tags.keyword,
+			...getSyntaxStyle(theme.syntax.keyword),
+		},
+		{
+			tag: [tags.atom, tags.number, tags.bool],
+			...getSyntaxStyle(theme.syntax.static),
+		},
+		{
+			tag: tags.tagName,
+			...getSyntaxStyle(theme.syntax.tag),
+		},
+		{ tag: tags.variableName, ...getSyntaxStyle(theme.syntax.plain) },
+		{
+			// Highlight function call
+			tag: tags.function(tags.variableName),
+			...getSyntaxStyle(theme.syntax.definition),
+		},
+		{
+			// Highlight function definition differently (eg: functional component def in React)
+			tag: tags.definition(tags.function(tags.variableName)),
+			...getSyntaxStyle(theme.syntax.definition),
+		},
+		{
+			tag: tags.propertyName,
+			...getSyntaxStyle(theme.syntax.property),
+		},
+		{
+			tag: [tags.literal, tags.inserted],
+			...getSyntaxStyle(theme.syntax.string ?? theme.syntax.static),
+		},
+		{ tag: tags.punctuation, ...getSyntaxStyle(theme.syntax.punctuation) },
+		{ tag: tags.comment, ...getSyntaxStyle(theme.syntax.comment) },
+	]);
+}
+
+function getSyntaxStyle(
+	token: string | SandpackSyntaxStyle,
+): SandpackSyntaxStyle {
+	if (typeof token === 'string') {
+		return { color: token };
+	}
+	return token;
+}
+
+function hexToCSSRGBa(hex: string, alpha: number): string {
+	if (hex.startsWith('#') && (hex.length === 4 || hex.length === 7)) {
+		const { red, green, blue } = hexToRGB(hex);
+		return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+	}
+
+	return hex;
+}
+
+function hexToRGB(hex: string): { red: number; green: number; blue: number } {
+	let r = '0';
+	let g = '0';
+	let b = '0';
+
+	if (hex.length === 4) {
+		r = '0x' + hex[1] + hex[1];
+		g = '0x' + hex[2] + hex[2];
+		b = '0x' + hex[3] + hex[3];
+	} else if (hex.length === 7) {
+		r = '0x' + hex[1] + hex[2];
+		g = '0x' + hex[3] + hex[4];
+		b = '0x' + hex[5] + hex[6];
+	}
+
+	return {
+		red: +r,
+		green: +g,
+		blue: +b,
+	};
+}
+
+const defaultLight: SandpackTheme = {
 	palette: {
 		activeText: '#1f2933',
 		defaultText: '#757678',
@@ -102,7 +245,7 @@ export const defaultLight: SandpackTheme = {
 /**
  * @category Theme
  */
-export const defaultDark: SandpackTheme = {
+const defaultDark: SandpackTheme = {
 	palette: {
 		activeText: '#FFFFFF',
 		defaultText: '#999999',
@@ -138,7 +281,7 @@ export const defaultDark: SandpackTheme = {
 /**
  * @category Theme
  */
-export const sandpackDark: SandpackTheme = {
+const sandpackDark: SandpackTheme = {
 	palette: {
 		activeText: '#90e86f',
 		defaultText: '#5a5a5a',
@@ -174,7 +317,7 @@ export const sandpackDark: SandpackTheme = {
 /**
  * @category Theme
  */
-export const aquaBlueTheme: SandpackTheme = {
+const aquaBlueTheme: SandpackTheme = {
 	palette: {
 		activeText: '#1f2933',
 		defaultText: '#737373',
@@ -211,7 +354,7 @@ export const aquaBlueTheme: SandpackTheme = {
 /**
  * @category Theme
  */
-export const githubLightTheme: SandpackTheme = {
+const githubLightTheme: SandpackTheme = {
 	palette: {
 		activeText: '#24292e',
 		defaultText: '#959da5',
@@ -250,7 +393,7 @@ export const githubLightTheme: SandpackTheme = {
 /**
  * @category Theme
  */
-export const nightOwlTheme: SandpackTheme = {
+const nightOwlTheme: SandpackTheme = {
 	palette: {
 		activeText: 'rgb(197, 228, 253)',
 		defaultText: 'rgb(105, 136, 161)',
@@ -286,7 +429,7 @@ export const nightOwlTheme: SandpackTheme = {
 /**
  * @category Theme
  */
-export const monokaiProTheme: SandpackTheme = {
+const monokaiProTheme: SandpackTheme = {
 	palette: {
 		activeText: 'rgb(252, 252, 250)',
 		defaultText: 'rgb(147, 146, 147)',

@@ -18,8 +18,8 @@
 <script setup lang="ts">
 import { PropType, computed, onMounted, ref } from 'vue';
 
-import { File } from '../files';
-import { SandpackTheme } from '../themes';
+import { File } from '../utils/files';
+import { SandpackTheme } from '../utils/themes';
 
 const props = defineProps({
 	files: {

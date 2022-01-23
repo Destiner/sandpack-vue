@@ -1,6 +1,6 @@
 {
   "name": "sandpack-vue",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Vue components for Sandpack",
   "exports": {
     ".": {

@@ -21,7 +21,7 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["import", "eslint-plugin-prettier", "vue"],
+  "plugins": ["import", "vue"],
   "rules": {
     "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
@@ -40,7 +40,6 @@
         }
       }
     ],
-    "prettier/prettier": "error",
     "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-use-before-define": "off",

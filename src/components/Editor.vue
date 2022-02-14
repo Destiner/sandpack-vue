@@ -1,17 +1,17 @@
 <template>
-	<div
-		ref="wrapper"
-		class="wrapper"
-	>
-		<FileSelector
-			v-if="hasVisibleFiles"
-			class="selector"
-			:active-index="activeFileIndex"
-			:files="files"
-			:theme="theme"
-			@select="handleFileSelect"
-		/>
-	</div>
+  <div
+    ref="wrapper"
+    class="wrapper"
+  >
+    <FileSelector
+      v-if="hasVisibleFiles"
+      class="selector"
+      :active-index="activeFileIndex"
+      :files="files"
+      :theme="theme"
+      @select="handleFileSelect"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -29,15 +29,15 @@ import { SandpackTheme, getPredefinedTheme, getSyntaxHighlight, themeEditor } fr
 import FileSelector from './FileSelector.vue';
 
 const props = defineProps({
-	files: {
-		type: Array as PropType<File[]>,
-		required: true,
-	},
-	theme: {
-		type: Object as PropType<SandpackTheme>,
-		required: false,
-		default: getPredefinedTheme('light'),
-	},
+  files: {
+    type: Array as PropType<File[]>,
+    required: true,
+  },
+  theme: {
+    type: Object as PropType<SandpackTheme>,
+    required: false,
+    default: getPredefinedTheme('light'),
+  },
 });
 
 const emit = defineEmits(['change']);
@@ -54,81 +54,81 @@ const hasVisibleFiles = computed(() => props.files.some((file) => file.visible))
 let editor: EditorView | null = null;
 
 function getLanguage(type: FileType) {
-	switch (type) {
-	case 'ts':
-		return javascript({ typescript: true, jsx: false });
-	case 'html':
-		return html();
-	case 'css':
-		return css();
-	default:
-		return javascript();
-	}
+  switch (type) {
+  case 'ts':
+    return javascript({ typescript: true, jsx: false });
+  case 'html':
+    return html();
+  case 'css':
+    return css();
+  default:
+    return javascript();
+  }
 }
 
 function handleFileSelect(index: number) {
-	activeFileIndex.value = index;
+  activeFileIndex.value = index;
 
-	if (!editor) {
-		return;
-	}
+  if (!editor) {
+    return;
+  }
 
-	editor.dispatch({
-		changes: {
-			from: 0,
-			to: editor.state.doc.length,
-			insert: activeFile.value.value,
-		},
-	});
-	editor.dispatch({
-		effects: language.reconfigure(getLanguage(activeFile.value.type)),
-	});
+  editor.dispatch({
+    changes: {
+      from: 0,
+      to: editor.state.doc.length,
+      insert: activeFile.value.value,
+    },
+  });
+  editor.dispatch({
+    effects: language.reconfigure(getLanguage(activeFile.value.type)),
+  });
 }
 
 onMounted(() => {
-	const extensions = [
-		highlightSpecialChars(),
-		highlightActiveLine(),
-		defaultHighlightStyle.fallback,
-		themeEditor(props.theme),
-		getSyntaxHighlight(props.theme),
+  const extensions = [
+    highlightSpecialChars(),
+    highlightActiveLine(),
+    defaultHighlightStyle.fallback,
+    themeEditor(props.theme),
+    getSyntaxHighlight(props.theme),
 
-		EditorView.editable.of(activeFile.value.editable),
-		language.of(getLanguage(activeFile.value.type)),
-	];
+    EditorView.editable.of(activeFile.value.editable),
+    language.of(getLanguage(activeFile.value.type)),
+  ];
 
-	if (!wrapper.value) {
-		return;
-	}
+  if (!wrapper.value) {
+    return;
+  }
 
-	editor = new EditorView({
-		state: EditorState.create({
-			doc: activeFile.value.value,
-			extensions,
-		}),
-		parent: wrapper.value,
-		dispatch: (transaction): void => {
-			if (!editor) {
-				return;
-			}
-			editor.update([transaction]);
+  editor = new EditorView({
+    state: EditorState.create({
+      doc: activeFile.value.value,
+      extensions,
+    }),
+    parent: wrapper.value,
+    dispatch: (transaction): void => {
+      if (!editor) {
+        return;
+      }
+      editor.update([transaction]);
 
-			if (transaction.docChanged) {
-				const lines = transaction.newDoc.toJSON();
-				const text = lines.join('\n');
-				emit('change', activeFileIndex.value, text);
-			}
-		},
-	});
+      if (transaction.docChanged) {
+        const lines = transaction.newDoc.toJSON();
+        const text = lines.join('\n');
+        emit('change', activeFileIndex.value, text);
+      }
+    },
+  });
 });
 </script>
 
 <style scoped>
 .wrapper {
-	font-size: 14px;
+  font-size: 14px;
 }
 
 .selector {
-	height: 40px;
+  height: 40px;
 }
 </style>

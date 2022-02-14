@@ -1,10 +1,10 @@
 {
-	"extends": [
-		"stylelint-config-standard",
-		"stylelint-config-recommended-vue",
-		"stylelint-config-property-sort-order-smacss"
-	],
-	"rules": {
-		"indentation": "tab"
-	}
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-recommended-vue",
+    "stylelint-config-property-sort-order-smacss"
+  ],
+  "rules": {
+    "indentation": 2
+  }
 }

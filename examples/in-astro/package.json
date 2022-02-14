@@ -1,0 +1,21 @@
+{
+  "name": "astro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@astrojs/renderer-vue": "^0.3.0",
+    "astro": "^0.22.9"
+  },
+  "dependencies": {
+    "postcss": "^8.4.5"
+  }
+}

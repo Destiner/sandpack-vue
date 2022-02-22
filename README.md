@@ -4,6 +4,10 @@ Vue components for [Sandpack](https://sandpack.codesandbox.io).
 
 > Note: this package is in heavy development. Expect breaking changes.
 
+## Usage
+
+You can learn more about using Vue components for Sandpack [here](https://sunstone.so/blog/post/using-sandpack-vue-components/).
+
 ## Example
 
 ```html
